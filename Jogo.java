@@ -1,16 +1,18 @@
 import java.util.Scanner;
-
+import java.io.*;
 
 
 public class Jogo {
     Palavra palavra;
     private int maximoTentativas;
     private Forca forca;
+    int pontuacao;
 
     Jogo(Palavra palavra, Forca forca) {
         this.maximoTentativas = 10;
         this.palavra = new Palavra();
         this.forca = new Forca();
+        this.pontuacao = 0;
         
     }
 
@@ -46,9 +48,11 @@ public class Jogo {
 
     public void iniciarJogo() {
         // lógica para iniciar o jogo
+
+        carregarEstado();
         StringBuilder letrasErradas = new StringBuilder();
         Scanner scanner = new Scanner(System.in);
-        int pontuacao = 0;
+        
         System.out.println("Escolha o nível de dificuldade: ");
 
         System.out.println("1 - Fácil");
@@ -78,7 +82,7 @@ public class Jogo {
         String mascara = this.palavra.criarMascara(palavraSorteada);
         int tentativas = 0;
 
-        while (mascara != null && tentativas < this.maximoTentativas) {
+        while (!mascara.equals(palavraSorteada) && mascara != null && tentativas < this.maximoTentativas) {
 
             System.out.println("Digite uma letra: ");
             String letra = scanner.next();
@@ -107,10 +111,10 @@ public class Jogo {
                     }
                 }
                 System.out.println("Acertou!");
-                pontuacao = pontuacao + 20;
+                this.pontuacao = this.pontuacao + 20;
             } else {
                 System.out.println("Errou!");
-                pontuacao = pontuacao - 5;
+                this.pontuacao = this.pontuacao - 5;
                 letrasErradas.append(letra).append(" ");
                 tentativas++;
                 this.forca.adicionarErro();
@@ -120,23 +124,51 @@ public class Jogo {
             System.out.println("Estado: " + mascara);
             System.out.println("Letras erradas: " + letrasErradas);
             System.out.println("Tentativas restantes: " + (this.maximoTentativas - tentativas));
-            System.out.println("Pontuação: " + pontuacao);
+            System.out.println("Pontuação: " + this.pontuacao);
             System.out.println("Boneco: " + String.join(" ", this.forca.getBoneco()));
             System.out.println("-----------------------------------------");
 
-            verificarVitoria(tentativas, mascara, palavraSorteada);
+            verificarVitoria(tentativas, mascara, palavraSorteada, this.pontuacao);
             
         }
 
-
+        salvarEstado();
         scanner.close();
     }
 
-    public void verificarVitoria(int tentativas, String mascara, String palavraSorteada) {
+    public void verificarVitoria(int tentativas, String mascara, String palavraSorteada, int pontuacao) {
         if (tentativas >= this.maximoTentativas) {
             System.out.println("Você perdeu! A palavra era: " + palavraSorteada);
+            
         } else if (mascara.equals(palavraSorteada)) {
             System.out.println("Você venceu!");
+            System.out.println("Pontuação Total: " + this.pontuacao);
+        }
+    }
+
+    public void salvarEstado(){
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("estado.txt"))) {
+            writer.write(this.pontuacao + "\n");
+            writer.write(this.forca.getErros() + "\n");
+            for (String parte : this.forca.getBoneco()) {
+                writer.write(parte + "\n");
+            }
+        } catch (IOException e) {
+            System.out.println("Erro ao salvar o estado do jogo: " + e.getMessage());
+        }
+    }
+
+    public void carregarEstado(){
+        try (BufferedReader reader = new BufferedReader(new FileReader("estado.txt"))) {
+            this.pontuacao = Integer.parseInt(reader.readLine());
+            this.forca.setErros(Integer.parseInt(reader.readLine()));
+            String[] boneco = new String[10];
+            for (int i = 0; i < 10; i++) {
+                boneco[i] = reader.readLine();
+            }
+            this.forca.setBoneco(boneco);
+        } catch (IOException e) {
+            System.out.println("Erro ao carregar o estado do jogo: " + e.getMessage());
         }
     }
 
