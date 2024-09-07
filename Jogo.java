@@ -48,6 +48,7 @@ public class Jogo {
         // lógica para iniciar o jogo
         StringBuilder letrasErradas = new StringBuilder();
         Scanner scanner = new Scanner(System.in);
+        int pontuacao = 0;
         System.out.println("Escolha o nível de dificuldade: ");
 
         System.out.println("1 - Fácil");
@@ -95,6 +96,7 @@ public class Jogo {
 
             if (mascara.contains(letra)) {
                 System.out.println("Letra já escolhida!");
+
                 continue;
             }
 
@@ -105,8 +107,10 @@ public class Jogo {
                     }
                 }
                 System.out.println("Acertou!");
+                pontuacao = pontuacao + 20;
             } else {
                 System.out.println("Errou!");
+                pontuacao = pontuacao - 5;
                 letrasErradas.append(letra).append(" ");
                 tentativas++;
                 this.forca.adicionarErro();
@@ -116,6 +120,7 @@ public class Jogo {
             System.out.println("Estado: " + mascara);
             System.out.println("Letras erradas: " + letrasErradas);
             System.out.println("Tentativas restantes: " + (this.maximoTentativas - tentativas));
+            System.out.println("Pontuação: " + pontuacao);
             System.out.println("Boneco: " + String.join(" ", this.forca.getBoneco()));
             System.out.println("-----------------------------------------");
 
