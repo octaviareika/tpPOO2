@@ -32,7 +32,7 @@ public class InterfaceSwing {
         // Colocar uma descrição na tela escrito bem vindo ao jogo da forca
         JLabel lblDescricao = new JLabel("Bem vindo ao jogo da forca", JLabel.CENTER);
         lblDescricao.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte da descrição
-        lblDescricao.setForeground(Color.BLUE); // Alterar a cor da fonte para azul
+        lblDescricao.setForeground(Color.BLUE); // Alterar a cor da fonte para azul qqaqq
         lblDescricao.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar o texto
 
         // botao iniciar

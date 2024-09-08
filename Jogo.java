@@ -149,11 +149,15 @@ public void initSwingComponents() {
                 }
             }
             lblMensagem.setText("Acertou a letra!");
+            lblMensagem.setForeground(Color.GREEN);
             
             pontuacao += 20;
+            lblPontuacao.setForeground(Color.GREEN);
         } else {
             lblMensagem.setText("Errou a letra!");
+            lblMensagem.setForeground(Color.RED);
             pontuacao -= 5;
+            lblPontuacao.setForeground(Color.RED);
             tentativas++;
             forca.adicionarErro();
             lblLetrasErradas.setText(lblLetrasErradas.getText() + letra + " ");
@@ -200,6 +204,7 @@ public void initSwingComponents() {
         lblPalavra.setText("Palavra: " + palavra.criarMascara(palavraSorteada));
         lblTentativas.setText("Tentativas restantes: " + maximoTentativas);
         lblPontuacao.setText("Pontuação: " + pontuacao);
+        lblPontuacao.setForeground(Color.BLACK);
         lblLetrasErradas.setText("Letras erradas: ");
         lblMensagem.setText("");
         forca.resetarBoneco(); // Resetar o boneco
