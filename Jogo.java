@@ -35,6 +35,18 @@ public class Jogo {
         initSwingComponents(); // Inicializar a interface Swing
     }
 
+    Jogo(InterfaceSwing interfaceSwing, String carregarDados) throws IOException {
+        this.maximoTentativas = 10;
+        this.palavra = new Palavra();
+        this.forca = new Forca();
+        this.pontuacao = 0;
+        this.tentativas = 0;
+        this.letrasDigitadas = new HashSet<>();
+        this.interfaceSwing = interfaceSwing; // Inicializar a referência
+        carregarDados();
+        initSwingComponents(); // Inicializar a interface Swing
+    }
+
 public void initSwingComponents() {
     panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));  // Define o layout como BoxLayout
@@ -231,8 +243,11 @@ public void initSwingComponents() {
 
     // Métodos de salvar e carregar estado, getters e setters, e main
 
-    public void salvarDados() throws IOException{
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("dadoJogo.txt"))){
+    public void salvarDados() throws IOException {
+        File arquivo = new File("dadoJogo.txt");
+        System.out.println("Salvando dados no arquivo: " + arquivo.getAbsolutePath());
+    
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))) {
             writer.write(palavraSorteada + "\n");
             writer.write(lblPalavra.getText() + "\n");
             writer.write(pontuacao + "\n");
@@ -241,27 +256,31 @@ public void initSwingComponents() {
                 writer.write(letra + "\n");
             }
         }
-
+    
         System.out.println("Arquivo salvo");
     }
 
     public void carregarDados() throws IOException {
-        File file = new File("dadoJogo.txt");
-        if (file.exists()) {
-            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-                palavraSorteada = reader.readLine();
-                pontuacao = Integer.parseInt(reader.readLine());
-                letrasDigitadas.clear();
-                String linha;
-                while ((linha = reader.readLine()) != null) {
-                    letrasDigitadas.add(linha.charAt(0));
-                }
+        File arquivo = new File("dadoJogo.txt");
+        System.out.println("Carregando dados do arquivo: " + arquivo.getAbsolutePath());
+    
+        if (!arquivo.exists()) {
+            throw new FileNotFoundException("Arquivo de dados não encontrado: " + arquivo.getAbsolutePath());
+        }
+    
+        try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            palavraSorteada = reader.readLine();
+            lblPalavra.setText(reader.readLine());
+            pontuacao = Integer.parseInt(reader.readLine());
+    
+            letrasDigitadas.clear();
+            String linha;
+            while ((linha = reader.readLine()) != null) {
+                letrasDigitadas.add(linha.charAt(0));
             }
-            System.out.println("Dados carregados");
-        } else {
-            System.out.println("Nenhum dado salvo encontrado");
         }
     }
+    
     public static void main(String[] args) throws IOException {
         // Inicializar o jogo com a interface Swing
         InterfaceSwing interfaceSwing = new InterfaceSwing();

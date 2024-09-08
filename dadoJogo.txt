@@ -1,7 +1,7 @@
-trem
-75
+carro
+Palavra: _a__o
+30
 a
-r
-t
-e
+v
 m
+o

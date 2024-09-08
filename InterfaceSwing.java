@@ -41,10 +41,28 @@ public class InterfaceSwing {
         btnIniciar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
         btnIniciar.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar o botão
 
+        // botao de abrir jogo que foi salvo no arquivo
+        JButton btnAbrir = new JButton("Abrir Jogo Salvo");
+        btnAbrir.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
+        btnAbrir.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
+        btnAbrir.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar o botão
+
+        btnAbrir.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    jogo.carregarDados();
+                    cardLayout.show(mainPanel, "Tela Jogo");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(mainPanel, "Erro ao carregar progresso: " + ex.getMessage());
+                }
+            }
+        });
+
         // Adicionar a descrição e o botão ao painel intermediário
         panelCentral.add(lblDescricao);
         panelCentral.add(Box.createRigidArea(new Dimension(0, 20))); // Espaço entre a descrição e o botão
         panelCentral.add(btnIniciar);
+        panelCentral.add(btnAbrir);
 
         // Adicionar o painel intermediário ao centro do painel principal
         telaInicial.add(panelCentral, BorderLayout.CENTER);
