@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
+import java.util.HashSet;
+import java.util.Set;
+import java.io.*;
 public class Jogo {
     Palavra palavra;
     private int maximoTentativas;
@@ -10,78 +12,93 @@ public class Jogo {
     int pontuacao;
     private int tentativas;
     private String palavraSorteada; // Adicionar variável de instância para armazenar a palavra sorteada
+    private Set<Character> letrasDigitadas; // Set para armazenar letras digitadas
 
     // Componentes da interface Swing
+    private InterfaceSwing interfaceSwing; // Adicionar referência à InterfaceSwing
+
     private JPanel panel;
     private JLabel lblPalavra, lblTentativas, lblPontuacao, lblMensagem, lblLetrasErradas, lblBoneco;
     private JTextField txtLetra;
     private JButton btnEnviar;
 
-    Jogo(Palavra palavra, Forca forca) {
+    Jogo(InterfaceSwing interfaceSwing) throws IOException {
         this.maximoTentativas = 10;
         this.palavra = new Palavra();
         this.forca = new Forca();
         this.pontuacao = 0;
         this.tentativas = 0;
-    }
-
-    Jogo() {
-        this.maximoTentativas = 10;
-        this.palavra = new Palavra();
-        this.forca = new Forca();
-        this.pontuacao = 0;
-        this.tentativas = 0;
-
+        this.letrasDigitadas = new HashSet<>();
+        this.interfaceSwing = interfaceSwing; // Inicializar a referência
+        //carregarDados();
         initSwingComponents(); // Inicializar a interface Swing
     }
 
-    // Inicializar componentes da interface Swing
-    private void initSwingComponents() {
-        panel = new JPanel();
-        panel.setLayout(new GridLayout(7, 1));  // Define o layout como Grid
+public void initSwingComponents() {
+    panel = new JPanel();
+    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));  // Define o layout como BoxLayout
 
-        // Sortear uma palavra
+    // Sortear uma palavra
+    if (palavraSorteada == null) {
         palavraSorteada = escolherDificuldade(); // Armazenar a palavra sorteada
-
-        // Rótulo para exibir a palavra mascarada
-        lblPalavra = new JLabel("Palavra: " + palavra.criarMascara(palavraSorteada), JLabel.CENTER);
-        lblTentativas = new JLabel("Tentativas restantes: " + maximoTentativas, JLabel.CENTER);
-        lblPontuacao = new JLabel("Pontuação: " + pontuacao, JLabel.CENTER);
-        lblMensagem = new JLabel("", JLabel.CENTER);
-        lblLetrasErradas = new JLabel("Letras erradas: ", JLabel.CENTER);
-        lblBoneco = new JLabel("Boneco: " + String.join(" ", forca.getBoneco()), JLabel.CENTER);
-
-        // Campo de texto para inserir a letra
-        txtLetra = new JTextField(1);
-
-        // Botão para enviar a letra
-        btnEnviar = new JButton("Enviar Letra");
-        btnEnviar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String letra = txtLetra.getText().trim(); // trim remove espaços em branco
-                txtLetra.setText("");   // Limpar o campo de texto
-
-                // Processar a letra enviada
-                processarLetra(letra);
-            }
-        });
-
-        // Adicionar os componentes ao painel
-        panel.add(lblPalavra);
-        panel.add(lblTentativas);
-        panel.add(lblPontuacao);
-        panel.add(lblMensagem);
-        panel.add(txtLetra);
-        panel.add(btnEnviar);
-        panel.add(lblLetrasErradas);
-        panel.add(lblBoneco);
     }
+
+    // Rótulo para exibir a palavra mascarada
+    lblPalavra = new JLabel("Palavra: " + palavra.criarMascara(palavraSorteada), SwingConstants.CENTER);
+    lblTentativas = new JLabel("Tentativas restantes: " + maximoTentativas, SwingConstants.CENTER);
+    lblPontuacao = new JLabel("Pontuação: " + pontuacao, SwingConstants.CENTER);
+    lblMensagem = new JLabel("", SwingConstants.CENTER);
+    lblLetrasErradas = new JLabel("Letras erradas: ", SwingConstants.CENTER);
+
+    // Rótulo para exibir a imagem do boneco
+    lblBoneco = new JLabel();
+    lblBoneco.setHorizontalAlignment(SwingConstants.CENTER);
+    atualizarImagemBoneco(); // Atualizar a imagem inicial do boneco
+
+    // Campo de texto para inserir a letra
+    txtLetra = new JTextField(2);
+    txtLetra.setPreferredSize(new Dimension(50, 30)); // Definir tamanho preferencial
+    txtLetra.setHorizontalAlignment(JTextField.CENTER); // Centralizar o texto
+
+    // Botão para enviar a letra
+    btnEnviar = new JButton("Enviar Letra");
+    btnEnviar.setPreferredSize(new Dimension(150, 30)); // Definir tamanho preferencial
+    btnEnviar.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            String letra = txtLetra.getText().trim(); // trim remove espaços em branco
+            txtLetra.setText("");   // Limpar o campo de texto
+
+            // Processar a letra enviada
+            try {
+                processarLetra(letra);
+            } catch (IOException e1) {
+               
+                e1.printStackTrace();
+            }
+        }
+    });
+
+    // Painel para o campo de texto e o botão
+    JPanel inputPanel = new JPanel(new FlowLayout());
+    inputPanel.add(txtLetra);
+    inputPanel.add(btnEnviar);
+
+    // Adicionar os componentes ao painel principal
+    panel.add(lblPalavra);
+    panel.add(lblTentativas);
+    panel.add(lblPontuacao);
+    panel.add(lblMensagem);
+    panel.add(lblLetrasErradas);
+    panel.add(inputPanel); // Adicionar o painel de entrada
+   
+    panel.add(lblBoneco);
+}
 
     public JPanel getPanel() {
         return panel;
     }
 
-    private String escolherDificuldade() {
+    public String escolherDificuldade() {
         String[] opcoes = {"Fácil", "Médio", "Difícil"};
         int opcao = JOptionPane.showOptionDialog(panel, "Escolha o nível de dificuldade:", "Nível de Dificuldade",
                 JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoes, opcoes[0]);
@@ -95,12 +112,13 @@ public class Jogo {
                 return palavra.sortearPalavraDificil();
             default:
                 JOptionPane.showMessageDialog(panel, "Opção inválida!");
-                return "";
+                System.exit(1);
+                return null;
         }
     }
 
     // Processar a letra inserida pelo jogador
-    private void processarLetra(String letra) {
+    public void processarLetra(String letra) throws IOException {
         if (letra.length() != 1) {
             JOptionPane.showMessageDialog(panel, "Digite apenas uma letra por vez!");
             return;
@@ -111,7 +129,16 @@ public class Jogo {
             return;
         }
 
+        char letraChar = letra.charAt(0); // converte string pra char
+        // Verficar se ja tem a letra na mascara
+        if (letrasDigitadas.contains(letraChar)){
+            JOptionPane.showMessageDialog(panel, "Você ja digitou essa letra!");
+            return;
+        }
+        
+        letrasDigitadas.add(letraChar);
         StringBuilder mascara = new StringBuilder(lblPalavra.getText().replace("Palavra: ", ""));
+
 
         // Verificar se a letra está correta
         if (palavraSorteada.contains(letra)) {
@@ -121,21 +148,23 @@ public class Jogo {
                     mascara.setCharAt(i, letra.charAt(0));
                 }
             }
-            lblMensagem.setText("Acertou!");
+            lblMensagem.setText("Acertou a letra!");
+            
             pontuacao += 20;
         } else {
-            lblMensagem.setText("Errou!");
+            lblMensagem.setText("Errou a letra!");
             pontuacao -= 5;
             tentativas++;
             forca.adicionarErro();
             lblLetrasErradas.setText(lblLetrasErradas.getText() + letra + " ");
+            atualizarImagemBoneco(); // Atualizar a imagem do boneco
+
         }
 
         // Atualizar os rótulos na interface
         lblPalavra.setText("Palavra: " + mascara.toString());
         lblTentativas.setText("Tentativas restantes: " + (maximoTentativas - tentativas));
         lblPontuacao.setText("Pontuação: " + pontuacao);
-        lblBoneco.setText("Boneco: " + String.join(" ", forca.getBoneco()));
 
         // Verificar vitória ou derrota
         if (tentativas >= maximoTentativas) {
@@ -143,39 +172,76 @@ public class Jogo {
             perguntarReiniciarOuSair();
         } else if (mascara.toString().equals(palavraSorteada)) {
             JOptionPane.showMessageDialog(panel, "Você venceu!");
-            perguntarReiniciarOuSair();
+           perguntarReiniciarOuSair();
+        }
+    }
+
+    // Método para atualizar a imagem do boneco
+    public void atualizarImagemBoneco() {
+        ImageIcon imagemErro = forca.getImagemErro();
+        if (imagemErro != null) {
+            lblBoneco.setIcon(imagemErro);
         }
     }
 
     // Perguntar ao usuário se deseja reiniciar ou sair
-    private void perguntarReiniciarOuSair() {
-        int resposta = JOptionPane.showOptionDialog(panel, "Deseja jogar novamente?", "Fim de Jogo",
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
-        if (resposta == JOptionPane.YES_OPTION) {
-            reiniciarJogo();
-        } else {
-            System.exit(0);
-        }
+    public void perguntarReiniciarOuSair() throws IOException {
+        interfaceSwing.mostrarTelaFinal();
+        
     }
 
     // Reiniciar o jogo após vitória ou derrota
-    private void reiniciarJogo() {
+    public void reiniciarJogo() {
         this.maximoTentativas = 10;
         this.pontuacao = 0;
         this.tentativas = 0;
+        this.letrasDigitadas.clear();
         palavraSorteada = escolherDificuldade(); // Sortear nova palavra
         lblPalavra.setText("Palavra: " + palavra.criarMascara(palavraSorteada));
         lblTentativas.setText("Tentativas restantes: " + maximoTentativas);
         lblPontuacao.setText("Pontuação: " + pontuacao);
         lblLetrasErradas.setText("Letras erradas: ");
-        lblBoneco.setText("Boneco: " + String.join(" ", forca.getBoneco()));
+        lblMensagem.setText("");
+        forca.resetarBoneco(); // Resetar o boneco
+        forca.resetarErros();
+        atualizarImagemBoneco();
     }
 
     // Métodos de salvar e carregar estado, getters e setters, e main
-    // ...
 
-    public static void main(String[] args) {
+    public void salvarDados() throws IOException{
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("dadoJogo.txt"))){
+            writer.write(palavraSorteada + "\n");
+            writer.write(pontuacao + "\n");
+            for (char letra : letrasDigitadas) {
+                writer.write(letra + "\n");
+            }
+        }
+
+        System.out.println("Arquivo salvo");
+    }
+
+    public void carregarDados() throws IOException {
+        File file = new File("dadoJogo.txt");
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                palavraSorteada = reader.readLine();
+                pontuacao = Integer.parseInt(reader.readLine());
+                letrasDigitadas.clear();
+                String linha;
+                while ((linha = reader.readLine()) != null) {
+                    letrasDigitadas.add(linha.charAt(0));
+                }
+            }
+            System.out.println("Dados carregados");
+        } else {
+            System.out.println("Nenhum dado salvo encontrado");
+        }
+    }
+    public static void main(String[] args) throws IOException {
         // Inicializar o jogo com a interface Swing
-        new Jogo();
+        InterfaceSwing interfaceSwing = new InterfaceSwing();
+        Jogo jogo = new Jogo(interfaceSwing);
+        
     }
 }
