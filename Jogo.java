@@ -1,182 +1,181 @@
-import java.util.Scanner;
-import java.io.*;
-
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class Jogo {
     Palavra palavra;
     private int maximoTentativas;
     private Forca forca;
     int pontuacao;
+    private int tentativas;
+    private String palavraSorteada; // Adicionar variável de instância para armazenar a palavra sorteada
+
+    // Componentes da interface Swing
+    private JPanel panel;
+    private JLabel lblPalavra, lblTentativas, lblPontuacao, lblMensagem, lblLetrasErradas, lblBoneco;
+    private JTextField txtLetra;
+    private JButton btnEnviar;
 
     Jogo(Palavra palavra, Forca forca) {
         this.maximoTentativas = 10;
         this.palavra = new Palavra();
         this.forca = new Forca();
         this.pontuacao = 0;
-        
+        this.tentativas = 0;
     }
 
-    // getter e setter
+    Jogo() {
+        this.maximoTentativas = 10;
+        this.palavra = new Palavra();
+        this.forca = new Forca();
+        this.pontuacao = 0;
+        this.tentativas = 0;
 
-    int getMaximoTentativas() {
-        return this.maximoTentativas;
+        initSwingComponents(); // Inicializar a interface Swing
     }
 
-    void setMaximoTentativas(int maximoTentativas) {
-        this.maximoTentativas = maximoTentativas;
+    // Inicializar componentes da interface Swing
+    private void initSwingComponents() {
+        panel = new JPanel();
+        panel.setLayout(new GridLayout(7, 1));  // Define o layout como Grid
+
+        // Sortear uma palavra
+        palavraSorteada = escolherDificuldade(); // Armazenar a palavra sorteada
+
+        // Rótulo para exibir a palavra mascarada
+        lblPalavra = new JLabel("Palavra: " + palavra.criarMascara(palavraSorteada), JLabel.CENTER);
+        lblTentativas = new JLabel("Tentativas restantes: " + maximoTentativas, JLabel.CENTER);
+        lblPontuacao = new JLabel("Pontuação: " + pontuacao, JLabel.CENTER);
+        lblMensagem = new JLabel("", JLabel.CENTER);
+        lblLetrasErradas = new JLabel("Letras erradas: ", JLabel.CENTER);
+        lblBoneco = new JLabel("Boneco: " + String.join(" ", forca.getBoneco()), JLabel.CENTER);
+
+        // Campo de texto para inserir a letra
+        txtLetra = new JTextField(1);
+
+        // Botão para enviar a letra
+        btnEnviar = new JButton("Enviar Letra");
+        btnEnviar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String letra = txtLetra.getText().trim(); // trim remove espaços em branco
+                txtLetra.setText("");   // Limpar o campo de texto
+
+                // Processar a letra enviada
+                processarLetra(letra);
+            }
+        });
+
+        // Adicionar os componentes ao painel
+        panel.add(lblPalavra);
+        panel.add(lblTentativas);
+        panel.add(lblPontuacao);
+        panel.add(lblMensagem);
+        panel.add(txtLetra);
+        panel.add(btnEnviar);
+        panel.add(lblLetrasErradas);
+        panel.add(lblBoneco);
     }
 
-    Palavra getPalavra() {
-        return this.palavra;
+    public JPanel getPanel() {
+        return panel;
     }
 
-    void setPalavra(Palavra palavra) {
-        this.palavra = palavra;
-    }
-
-    public String sortearPalavraFacil() {
-        return this.palavra.sortearPalavraFacil();
-    }
-
-    public String sortearPalavraMedia() {
-        return this.palavra.sortearPalavraMedia();
-    }
-
-    public String sortearPalavraDificil() {
-        return this.palavra.sortearPalavraDificil();
-    }
-
-    public void iniciarJogo() {
-        // lógica para iniciar o jogo
-
-        carregarEstado();
-        StringBuilder letrasErradas = new StringBuilder();
-        Scanner scanner = new Scanner(System.in);
-        
-        System.out.println("Escolha o nível de dificuldade: ");
-
-        System.out.println("1 - Fácil");
-        System.out.println("2 - Médio");
-        System.out.println("3 - Difícil");
-
-        int opcao = scanner.nextInt();
-
-        String palavraSorteada = "";
+    private String escolherDificuldade() {
+        String[] opcoes = {"Fácil", "Médio", "Difícil"};
+        int opcao = JOptionPane.showOptionDialog(panel, "Escolha o nível de dificuldade:", "Nível de Dificuldade",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, opcoes, opcoes[0]);
 
         switch (opcao) {
+            case 0:
+                return palavra.sortearPalavraFacil();
             case 1:
-                palavraSorteada = this.sortearPalavraFacil();
-                break;
+                return palavra.sortearPalavraMedia();
             case 2:
-                palavraSorteada = this.sortearPalavraMedia();
-                break;
-            case 3:
-                palavraSorteada = this.sortearPalavraDificil();
-                break;
+                return palavra.sortearPalavraDificil();
             default:
-                System.out.println("Opção inválida!");
-                break;
+                JOptionPane.showMessageDialog(panel, "Opção inválida!");
+                return "";
+        }
+    }
+
+    // Processar a letra inserida pelo jogador
+    private void processarLetra(String letra) {
+        if (letra.length() != 1) {
+            JOptionPane.showMessageDialog(panel, "Digite apenas uma letra por vez!");
+            return;
         }
 
-        // mascara
-        String mascara = this.palavra.criarMascara(palavraSorteada);
-        int tentativas = 0;
+        if (Character.isDigit(letra.charAt(0))) {
+            JOptionPane.showMessageDialog(panel, "Digite apenas letras!");
+            return;
+        }
 
-        while (!mascara.equals(palavraSorteada) && mascara != null && tentativas < this.maximoTentativas) {
+        StringBuilder mascara = new StringBuilder(lblPalavra.getText().replace("Palavra: ", ""));
 
-            System.out.println("Digite uma letra: ");
-            String letra = scanner.next();
-            if (letra.length() > 1) {
-                System.out.println("Digite apenas uma letra por vez!");
-                continue;
-            }
-
-            // se a letra digitada for um número
-
-            if (Character.isDigit(letra.charAt(0))) {
-                System.out.println("Digite apenas letras!");
-                continue;
-            }
-
-            if (mascara.contains(letra)) {
-                System.out.println("Letra já escolhida!");
-
-                continue;
-            }
-
-            if (palavraSorteada.contains(letra)) {
-                for (int i = 0; i < palavraSorteada.length(); i++) {
-                    if (palavraSorteada.charAt(i) == letra.charAt(0)) {
-                        mascara = mascara.substring(0, i) + letra + mascara.substring(i + 1);
-                    }
+        // Verificar se a letra está correta
+        if (palavraSorteada.contains(letra)) {
+            // Atualiza a palavra mascarada com a letra correta
+            for (int i = 0; i < palavraSorteada.length(); i++) {
+                if (palavraSorteada.charAt(i) == letra.charAt(0)) {
+                    mascara.setCharAt(i, letra.charAt(0));
                 }
-                System.out.println("Acertou!");
-                this.pontuacao = this.pontuacao + 20;
-            } else {
-                System.out.println("Errou!");
-                this.pontuacao = this.pontuacao - 5;
-                letrasErradas.append(letra).append(" ");
-                tentativas++;
-                this.forca.adicionarErro();
             }
-
-            System.out.println("-----------------------------------------");
-            System.out.println("Estado: " + mascara);
-            System.out.println("Letras erradas: " + letrasErradas);
-            System.out.println("Tentativas restantes: " + (this.maximoTentativas - tentativas));
-            System.out.println("Pontuação: " + this.pontuacao);
-            System.out.println("Boneco: " + String.join(" ", this.forca.getBoneco()));
-            System.out.println("-----------------------------------------");
-
-            verificarVitoria(tentativas, mascara, palavraSorteada, this.pontuacao);
-            
+            lblMensagem.setText("Acertou!");
+            pontuacao += 20;
+        } else {
+            lblMensagem.setText("Errou!");
+            pontuacao -= 5;
+            tentativas++;
+            forca.adicionarErro();
+            lblLetrasErradas.setText(lblLetrasErradas.getText() + letra + " ");
         }
 
-        salvarEstado();
-        scanner.close();
-    }
+        // Atualizar os rótulos na interface
+        lblPalavra.setText("Palavra: " + mascara.toString());
+        lblTentativas.setText("Tentativas restantes: " + (maximoTentativas - tentativas));
+        lblPontuacao.setText("Pontuação: " + pontuacao);
+        lblBoneco.setText("Boneco: " + String.join(" ", forca.getBoneco()));
 
-    public void verificarVitoria(int tentativas, String mascara, String palavraSorteada, int pontuacao) {
-        if (tentativas >= this.maximoTentativas) {
-            System.out.println("Você perdeu! A palavra era: " + palavraSorteada);
-            
-        } else if (mascara.equals(palavraSorteada)) {
-            System.out.println("Você venceu!");
-            System.out.println("Pontuação Total: " + this.pontuacao);
-        }
-    }
-
-    public void salvarEstado(){
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("estado.txt"))) {
-            writer.write(this.pontuacao + "\n");
-            writer.write(this.forca.getErros() + "\n");
-            for (String parte : this.forca.getBoneco()) {
-                writer.write(parte + "\n");
-            }
-        } catch (IOException e) {
-            System.out.println("Erro ao salvar o estado do jogo: " + e.getMessage());
+        // Verificar vitória ou derrota
+        if (tentativas >= maximoTentativas) {
+            JOptionPane.showMessageDialog(panel, "Você perdeu! A palavra era: " + palavraSorteada);
+            perguntarReiniciarOuSair();
+        } else if (mascara.toString().equals(palavraSorteada)) {
+            JOptionPane.showMessageDialog(panel, "Você venceu!");
+            perguntarReiniciarOuSair();
         }
     }
 
-    public void carregarEstado(){
-        try (BufferedReader reader = new BufferedReader(new FileReader("estado.txt"))) {
-            this.pontuacao = Integer.parseInt(reader.readLine());
-            this.forca.setErros(Integer.parseInt(reader.readLine()));
-            String[] boneco = new String[10];
-            for (int i = 0; i < 10; i++) {
-                boneco[i] = reader.readLine();
-            }
-            this.forca.setBoneco(boneco);
-        } catch (IOException e) {
-            System.out.println("Erro ao carregar o estado do jogo: " + e.getMessage());
+    // Perguntar ao usuário se deseja reiniciar ou sair
+    private void perguntarReiniciarOuSair() {
+        int resposta = JOptionPane.showOptionDialog(panel, "Deseja jogar novamente?", "Fim de Jogo",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+        if (resposta == JOptionPane.YES_OPTION) {
+            reiniciarJogo();
+        } else {
+            System.exit(0);
         }
     }
+
+    // Reiniciar o jogo após vitória ou derrota
+    private void reiniciarJogo() {
+        this.maximoTentativas = 10;
+        this.pontuacao = 0;
+        this.tentativas = 0;
+        palavraSorteada = escolherDificuldade(); // Sortear nova palavra
+        lblPalavra.setText("Palavra: " + palavra.criarMascara(palavraSorteada));
+        lblTentativas.setText("Tentativas restantes: " + maximoTentativas);
+        lblPontuacao.setText("Pontuação: " + pontuacao);
+        lblLetrasErradas.setText("Letras erradas: ");
+        lblBoneco.setText("Boneco: " + String.join(" ", forca.getBoneco()));
+    }
+
+    // Métodos de salvar e carregar estado, getters e setters, e main
+    // ...
 
     public static void main(String[] args) {
-        Palavra palavra = new Palavra();
-        Forca forca = new Forca();
-        Jogo jogo = new Jogo(palavra, forca);
-        jogo.iniciarJogo();
+        // Inicializar o jogo com a interface Swing
+        new Jogo();
     }
-    
-};
+}
