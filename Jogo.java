@@ -21,6 +21,7 @@ public class Jogo {
     private JLabel lblPalavra, lblTentativas, lblPontuacao, lblMensagem, lblLetrasErradas, lblBoneco;
     private JTextField txtLetra;
     private JButton btnEnviar;
+    private JButton btnSalvar;
 
     Jogo(InterfaceSwing interfaceSwing) throws IOException {
         this.maximoTentativas = 10;
@@ -78,10 +79,27 @@ public void initSwingComponents() {
         }
     });
 
+    // Botão para salvar o jogo
+    btnSalvar = new JButton("Salvar Jogo");
+    // colocar o botão salvar no painel
+    btnSalvar.setPreferredSize(new Dimension(150, 30)); // Definir tamanho preferencial
+    
+    btnSalvar.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+            try {
+                salvarDados();
+                JOptionPane.showMessageDialog(panel, "Progresso salvo com sucesso!");
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(panel, "Erro ao salvar progresso: " + ex.getMessage());
+            }
+        }
+    });
+
     // Painel para o campo de texto e o botão
     JPanel inputPanel = new JPanel(new FlowLayout());
     inputPanel.add(txtLetra);
     inputPanel.add(btnEnviar);
+    inputPanel.add(btnSalvar);
 
     // Adicionar os componentes ao painel principal
     panel.add(lblPalavra);
@@ -90,7 +108,6 @@ public void initSwingComponents() {
     panel.add(lblMensagem);
     panel.add(lblLetrasErradas);
     panel.add(inputPanel); // Adicionar o painel de entrada
-   
     panel.add(lblBoneco);
 }
 
@@ -217,7 +234,9 @@ public void initSwingComponents() {
     public void salvarDados() throws IOException{
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("dadoJogo.txt"))){
             writer.write(palavraSorteada + "\n");
+            writer.write(lblPalavra.getText() + "\n");
             writer.write(pontuacao + "\n");
+    
             for (char letra : letrasDigitadas) {
                 writer.write(letra + "\n");
             }
