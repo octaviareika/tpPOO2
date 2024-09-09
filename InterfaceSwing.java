@@ -18,35 +18,53 @@ public class InterfaceSwing {
         JFrame frame = new JFrame("Jogo da Forca");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(800, 700);
-
+    
         cardLayout = new CardLayout();
         mainPanel = new JPanel(cardLayout);
-
-        JPanel telaInicial = new JPanel(new BorderLayout());
-
-        // Criar um painel intermediário com BoxLayout para alinhar verticalmente
-        JPanel panelCentral = new JPanel();
-        panelCentral.setLayout(new BoxLayout(panelCentral, BoxLayout.Y_AXIS));
-        panelCentral.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        // Colocar uma descrição na tela escrito bem vindo ao jogo da forca
-        JLabel lblDescricao = new JLabel("Bem vindo ao jogo da forca", JLabel.CENTER);
+    
+        // Tela Inicial
+        JPanel telaInicial = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10); // Espaçamento entre os componentes
+        gbc.gridx = 0; // Coluna 0
+        gbc.gridy = 0; // Linha 0
+        gbc.anchor = GridBagConstraints.CENTER; // Alinhamento central
+    
+        // Adicionar a descrição
+        JLabel lblDescricao = new JLabel("Bem-vindo ao Jogo da Forca!");
+        lblDescricao.setForeground(Color.PINK);
         lblDescricao.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte da descrição
-        lblDescricao.setForeground(Color.BLUE); // Alterar a cor da fonte para azul qqaqq
-        lblDescricao.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar o texto
-
-        // botao iniciar
+        telaInicial.add(lblDescricao, gbc);
+    
+        // Incrementar a linha para adicionar a imagem abaixo da descrição
+        gbc.gridy++;
+    
+        // Carregar e adicionar a imagem
+        ImageIcon imagemForcaIcon = new ImageIcon("TPPOO2/ImagensBoneco/jogoForca.png");
+        Image imagemForca = imagemForcaIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+        JLabel lblImagemForca = new JLabel(new ImageIcon(imagemForca));
+        telaInicial.add(lblImagemForca, gbc);
+    
+        // Incrementar a linha para adicionar os botões abaixo da imagem
+        gbc.gridy++;
+    
         JButton btnIniciar = new JButton("Iniciar Jogo");
-        btnIniciar.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
-        btnIniciar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
-        btnIniciar.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar o botão
-
-        // botao de abrir jogo que foi salvo no arquivo
+        btnIniciar.setPreferredSize(new Dimension(200, 50)); // Definir tamanho preferencial
+        btnIniciar.setFont(new Font("Arial", Font.BOLD, 18)); // Aumentar a fonte do botão
+        telaInicial.add(btnIniciar, gbc);
+    
+        gbc.gridy++;
         JButton btnAbrir = new JButton("Abrir Jogo Salvo");
-        btnAbrir.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
-        btnAbrir.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
-        btnAbrir.setAlignmentX(Component.CENTER_ALIGNMENT); // Centralizar o botão
-
+        btnAbrir.setPreferredSize(new Dimension(200, 50)); // Definir tamanho preferencial
+        btnAbrir.setFont(new Font("Arial", Font.BOLD, 18)); // Aumentar a fonte do botão
+        telaInicial.add(btnAbrir, gbc);
+    
+        btnIniciar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cardLayout.show(mainPanel, "Tela Jogo");
+            }
+        });
+    
         btnAbrir.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -57,43 +75,28 @@ public class InterfaceSwing {
                 }
             }
         });
-
-        // Adicionar a descrição e o botão ao painel intermediário
-        panelCentral.add(lblDescricao);
-        panelCentral.add(Box.createRigidArea(new Dimension(0, 20))); // Espaço entre a descrição e o botão
-        panelCentral.add(btnIniciar);
-        panelCentral.add(btnAbrir);
-
-        // Adicionar o painel intermediário ao centro do painel principal
-        telaInicial.add(panelCentral, BorderLayout.CENTER);
-
-        btnIniciar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "Tela Jogo");
-            }
-        });
-
+    
         JPanel telaJogo = jogo.getPanel();
-
+    
         JPanel telaFinal = new JPanel(new BorderLayout());
         JLabel lblMensagemFinal = new JLabel("Fim de Jogo!", JLabel.CENTER);
         lblMensagemFinal.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte da mensagem final
-
+    
         JButton btnReiniciar = new JButton("Reiniciar Jogo");
         btnReiniciar.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
         btnReiniciar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
-
+    
         JButton btnSalvar = new JButton("Salvar");
         btnSalvar.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
         btnSalvar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
-
+    
         btnReiniciar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 cardLayout.show(mainPanel, "Tela Inicial");
                 jogo.reiniciarJogo();
             }
         });
-
+    
         btnSalvar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -104,25 +107,21 @@ public class InterfaceSwing {
                 }
             }
         });
-
+    
         // Adicionar os botões a um painel intermediário com FlowLayout
         JPanel panelBtnsFinal = new JPanel(new FlowLayout(FlowLayout.CENTER));
         panelBtnsFinal.add(btnSalvar);
         panelBtnsFinal.add(btnReiniciar);
-
+    
         telaFinal.add(lblMensagemFinal, BorderLayout.CENTER);
         telaFinal.add(panelBtnsFinal, BorderLayout.SOUTH);
-
+    
         mainPanel.add(telaInicial, "Tela Inicial");
         mainPanel.add(telaJogo, "Tela Jogo");
         mainPanel.add(telaFinal, "Tela Final");
-
+    
         frame.add(mainPanel);
         frame.setVisible(true);
-    }
-
-    public void mostrarTelaFinal() throws IOException {
-        cardLayout.show(mainPanel, "Tela Final");
     }
 
     public static void main(String[] args) {

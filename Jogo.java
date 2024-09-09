@@ -58,10 +58,15 @@ public void initSwingComponents() {
 
     // Rótulo para exibir a palavra mascarada
     lblPalavra = new JLabel("Palavra: " + palavra.criarMascara(palavraSorteada), SwingConstants.CENTER);
+    lblPalavra.setFont(new Font("Arial", Font.BOLD, 14)); // Aumentar a fonte do rótulo
     lblTentativas = new JLabel("Tentativas restantes: " + maximoTentativas, SwingConstants.CENTER);
+    lblTentativas.setFont(new Font("Arial", Font.BOLD, 14)); 
     lblPontuacao = new JLabel("Pontuação: " + pontuacao, SwingConstants.CENTER);
+    lblPontuacao.setFont(new Font("Arial", Font.BOLD, 14));
     lblMensagem = new JLabel("", SwingConstants.CENTER);
+    lblMensagem.setFont(new Font("Arial", Font.BOLD, 14));
     lblLetrasErradas = new JLabel("Letras erradas: ", SwingConstants.CENTER);
+    lblLetrasErradas.setFont(new Font("Arial", Font.BOLD, 14));
 
     // Rótulo para exibir a imagem do boneco
     lblBoneco = new JLabel();
