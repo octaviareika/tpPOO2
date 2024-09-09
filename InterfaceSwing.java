@@ -123,6 +123,10 @@ public class InterfaceSwing {
         frame.add(mainPanel);
         frame.setVisible(true);
     }
+ 
+    public void mostrarTelaFinal() throws IOException {
+        cardLayout.show(mainPanel, "Tela Final");
+    }
 
     public static void main(String[] args) {
         try {
