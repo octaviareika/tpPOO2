@@ -80,43 +80,18 @@ public class InterfaceSwing {
     
         JPanel telaJogo = jogo.getPanel();
     
+        // mudar aqui
         JPanel telaFinal = new JPanel(new BorderLayout());
+       
         JLabel lblMensagemFinal = new JLabel("Fim de Jogo!", JLabel.CENTER);
-        lblMensagemFinal.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte da mensagem final
-    
+        
         JButton btnReiniciar = new JButton("Reiniciar Jogo");
-        btnReiniciar.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
-        btnReiniciar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
     
         JButton btnSalvar = new JButton("Salvar");
-        btnSalvar.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
-        btnSalvar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
-    
-        btnReiniciar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                cardLayout.show(mainPanel, "Tela Inicial");
-                jogo.reiniciarJogo();
-            }
-        });
-    
-        btnSalvar.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    jogo.salvarDados();
-                    JOptionPane.showMessageDialog(mainPanel, "Progresso salvo com sucesso!");
-                } catch (IOException ex) {
-                    JOptionPane.showMessageDialog(mainPanel, "Erro ao salvar progresso: " + ex.getMessage());
-                }
-            }
-        });
-    
-        // Adicionar os botões a um painel intermediário com FlowLayout
-        JPanel panelBtnsFinal = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        panelBtnsFinal.add(btnSalvar);
-        panelBtnsFinal.add(btnReiniciar);
-    
-        telaFinal.add(lblMensagemFinal, BorderLayout.CENTER);
-        telaFinal.add(panelBtnsFinal, BorderLayout.SOUTH);
+
+        String venceuOuPerdeu = "";
+        
+        mostrarTelaFinalJpanel(telaFinal, lblMensagemFinal, btnReiniciar, btnSalvar, venceuOuPerdeu);
     
         mainPanel.add(telaInicial, "Tela Inicial");
         mainPanel.add(telaJogo, "Tela Jogo");
@@ -125,11 +100,57 @@ public class InterfaceSwing {
         frame.add(mainPanel);
         frame.setVisible(true);
     }
- 
-    public void mostrarTelaFinal() throws IOException {
-        cardLayout.show(mainPanel, "Tela Final");
-    }
 
+        /*...*/
+        public void mostrarTelaFinal(String mensagemFinal) throws IOException {
+            JPanel telaFinal = new JPanel(new BorderLayout());
+            JLabel lblMensagemFinal = new JLabel(mensagemFinal, JLabel.CENTER);
+            JButton btnReiniciar = new JButton("Reiniciar Jogo");
+            JButton btnSalvar = new JButton("Salvar");
+    
+            mostrarTelaFinalJpanel(telaFinal, lblMensagemFinal, btnReiniciar, btnSalvar, mensagemFinal);
+    
+            mainPanel.add(telaFinal, "Tela Final");
+            cardLayout.show(mainPanel, "Tela Final");
+        }
+    
+        public void mostrarTelaFinalJpanel(JPanel telaFinal, JLabel lblMensagemFinal, JButton btnReiniciar, JButton btnSalvar, String venceuOuPerdeu) {
+            lblMensagemFinal.setText(venceuOuPerdeu); // Definir a mensagem de vitória ou derrota
+            lblMensagemFinal.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte da mensagem final
+                
+            btnReiniciar.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
+            btnReiniciar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
+        
+            btnSalvar.setPreferredSize(new Dimension(200, 100)); // Definir tamanho preferencial
+            btnSalvar.setFont(new Font("Arial", Font.BOLD, 24)); // Aumentar a fonte do botão
+    
+            btnReiniciar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    cardLayout.show(mainPanel, "Tela Inicial");
+                    jogo.reiniciarJogo();
+                }
+            });
+        
+            btnSalvar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        jogo.salvarDados();
+                        JOptionPane.showMessageDialog(mainPanel, "Progresso salvo com sucesso!");
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(mainPanel, "Erro ao salvar progresso: " + ex.getMessage());
+                    }
+                }
+            });
+    
+            JPanel panelBtnsFinal = new JPanel(new FlowLayout(FlowLayout.CENTER));
+            panelBtnsFinal.add(btnSalvar);
+            panelBtnsFinal.add(btnReiniciar);
+        
+            telaFinal.add(lblMensagemFinal, BorderLayout.CENTER);
+            telaFinal.add(panelBtnsFinal, BorderLayout.SOUTH);
+        }
+        /*...*/
+    
     public static void main(String[] args) {
         try {
             // Tenta aplicar o tema Nimbus

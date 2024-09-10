@@ -186,14 +186,14 @@ public void initSwingComponents() {
                     mascara.setCharAt(i, letra.charAt(0));
                 }
             }
-            playSound("musicas/acertaPalavra.wav");
+            playSound("TPPOO2/musicas/acertaPalavra.wav");
             lblMensagem.setText("Acertou a letra!");
             lblMensagem.setForeground(Color.GREEN);
             
             pontuacao += 20;
             lblPontuacao.setForeground(Color.GREEN);
         } else {
-            playSound("musicas/letraErrada.wav");
+            playSound("TPPOO2/musicas/letraErrada.wav");
             lblMensagem.setText("Errou a letra!");
             lblMensagem.setForeground(Color.RED);
             pontuacao -= 5;
@@ -213,12 +213,12 @@ public void initSwingComponents() {
         // Verificar vitória ou derrota
         if (tentativas <= 0) {
             JOptionPane.showMessageDialog(panel, "Você perdeu! A palavra era: " + palavraSorteada);
-            playSound("musicas/jogoPerdido.wav");
-            perguntarReiniciarOuSair();
+            playSound("TPPOO2/musicas/jogoPerdido.wav");
+            perguntarReiniciarOuSair(false);
         } else if (mascara.toString().equals(palavraSorteada)) {
             JOptionPane.showMessageDialog(panel, "Você venceu!");
-            playSound("musicas/vitoria.wav");
-           perguntarReiniciarOuSair();
+            playSound("TPPOO2/musicas/vitoria.wav");
+           perguntarReiniciarOuSair(true);
         }
     }
 
@@ -231,9 +231,9 @@ public void initSwingComponents() {
     }
 
     // Perguntar ao usuário se deseja reiniciar ou sair
-    public void perguntarReiniciarOuSair() throws IOException {
-        interfaceSwing.mostrarTelaFinal();
-        
+    public void perguntarReiniciarOuSair(boolean venceu) throws IOException {
+        String mensagemFinal = venceu ? "Você venceu! Deseja reiniciar o jogo?" : "Você perdeu! Deseja reiniciar o jogo?";
+        interfaceSwing.mostrarTelaFinal(mensagemFinal);
     }
 
     // Reiniciar o jogo após vitória ou derrota
