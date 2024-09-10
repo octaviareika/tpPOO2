@@ -5,6 +5,10 @@ import java.awt.event.ActionListener;
 import java.util.HashSet;
 import java.util.Set;
 import java.io.*;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 public class Jogo {
     Palavra palavra;
    // private int maximoTentativas;
@@ -32,18 +36,6 @@ public class Jogo {
         this.letrasDigitadas = new HashSet<>();
         this.interfaceSwing = interfaceSwing; // Inicializar a referência
         //carregarDados();
-        initSwingComponents(); // Inicializar a interface Swing
-    }
-
-    Jogo(InterfaceSwing interfaceSwing, String carregarDados) throws IOException {
-        //this.maximoTentativas = 10;
-        this.palavra = new Palavra();
-        this.forca = new Forca();
-        this.pontuacao = 0;
-        this.tentativas = 10;
-        this.letrasDigitadas = new HashSet<>();
-        this.interfaceSwing = interfaceSwing; // Inicializar a referência
-        carregarDados();
         initSwingComponents(); // Inicializar a interface Swing
     }
 
@@ -95,6 +87,7 @@ public void initSwingComponents() {
             }
         }
     });
+
 
     // Botão para salvar o jogo
     btnSalvar = new JButton("Salvar Jogo");
@@ -151,6 +144,17 @@ public void initSwingComponents() {
         }
     }
 
+    public static void playSound(String filePath){
+        try {
+            AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath).getAbsoluteFile());
+            Clip clip = AudioSystem.getClip(); // cria um clip de audio, o que significa que ele pode ser tocado
+            clip.open(audioInputStream); // abre o arquivo de audio
+            clip.start();//começar
+        } catch (Exception e) {
+            System.out.println("Erro ao tocar o som: " + e.getMessage());
+        }
+    }
+
     // Processar a letra inserida pelo jogador
     public void processarLetra(String letra) throws IOException {
         if (letra.length() != 1) {
@@ -182,12 +186,14 @@ public void initSwingComponents() {
                     mascara.setCharAt(i, letra.charAt(0));
                 }
             }
+            playSound("musicas/acertaPalavra.wav");
             lblMensagem.setText("Acertou a letra!");
             lblMensagem.setForeground(Color.GREEN);
             
             pontuacao += 20;
             lblPontuacao.setForeground(Color.GREEN);
         } else {
+            playSound("musicas/letraErrada.wav");
             lblMensagem.setText("Errou a letra!");
             lblMensagem.setForeground(Color.RED);
             pontuacao -= 5;
@@ -207,9 +213,11 @@ public void initSwingComponents() {
         // Verificar vitória ou derrota
         if (tentativas <= 0) {
             JOptionPane.showMessageDialog(panel, "Você perdeu! A palavra era: " + palavraSorteada);
+            playSound("musicas/jogoPerdido.wav");
             perguntarReiniciarOuSair();
         } else if (mascara.toString().equals(palavraSorteada)) {
             JOptionPane.showMessageDialog(panel, "Você venceu!");
+            playSound("musicas/vitoria.wav");
            perguntarReiniciarOuSair();
         }
     }
