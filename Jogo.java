@@ -7,7 +7,7 @@ import java.util.Set;
 import java.io.*;
 public class Jogo {
     Palavra palavra;
-    private int maximoTentativas;
+   // private int maximoTentativas;
     private Forca forca;
     int pontuacao;
     private int tentativas;
@@ -24,11 +24,11 @@ public class Jogo {
     private JButton btnSalvar;
 
     Jogo(InterfaceSwing interfaceSwing) throws IOException {
-        this.maximoTentativas = 10;
+      // this.maximoTentativas = 10;
         this.palavra = new Palavra();
         this.forca = new Forca();
         this.pontuacao = 0;
-        this.tentativas = 0;
+        this.tentativas = 10;
         this.letrasDigitadas = new HashSet<>();
         this.interfaceSwing = interfaceSwing; // Inicializar a referência
         //carregarDados();
@@ -36,11 +36,11 @@ public class Jogo {
     }
 
     Jogo(InterfaceSwing interfaceSwing, String carregarDados) throws IOException {
-        this.maximoTentativas = 10;
+        //this.maximoTentativas = 10;
         this.palavra = new Palavra();
         this.forca = new Forca();
         this.pontuacao = 0;
-        this.tentativas = 0;
+        this.tentativas = 10;
         this.letrasDigitadas = new HashSet<>();
         this.interfaceSwing = interfaceSwing; // Inicializar a referência
         carregarDados();
@@ -59,7 +59,7 @@ public void initSwingComponents() {
     // Rótulo para exibir a palavra mascarada
     lblPalavra = new JLabel("Palavra: " + palavra.criarMascara(palavraSorteada), SwingConstants.CENTER);
     lblPalavra.setFont(new Font("Arial", Font.BOLD, 14)); // Aumentar a fonte do rótulo
-    lblTentativas = new JLabel("Tentativas restantes: " + maximoTentativas, SwingConstants.CENTER);
+    lblTentativas = new JLabel("Tentativas restantes: " + tentativas, SwingConstants.CENTER);
     lblTentativas.setFont(new Font("Arial", Font.BOLD, 14)); 
     lblPontuacao = new JLabel("Pontuação: " + pontuacao, SwingConstants.CENTER);
     lblPontuacao.setFont(new Font("Arial", Font.BOLD, 14));
@@ -145,7 +145,7 @@ public void initSwingComponents() {
             case 2:
                 return palavra.sortearPalavraDificil();
             default:
-                JOptionPane.showMessageDialog(panel, "Opção inválida!");
+                JOptionPane.showMessageDialog(panel, "Jogo fechado");
                 System.exit(1);
                 return null;
         }
@@ -192,7 +192,7 @@ public void initSwingComponents() {
             lblMensagem.setForeground(Color.RED);
             pontuacao -= 5;
             lblPontuacao.setForeground(Color.RED);
-            tentativas++;
+            tentativas--;
             forca.adicionarErro();
             lblLetrasErradas.setText(lblLetrasErradas.getText() + letra + " ");
             atualizarImagemBoneco(); // Atualizar a imagem do boneco
@@ -201,11 +201,11 @@ public void initSwingComponents() {
 
         // Atualizar os rótulos na interface
         lblPalavra.setText("Palavra: " + mascara.toString());
-        lblTentativas.setText("Tentativas restantes: " + (maximoTentativas - tentativas));
+        lblTentativas.setText("Tentativas restantes: " + (tentativas));
         lblPontuacao.setText("Pontuação: " + pontuacao);
 
         // Verificar vitória ou derrota
-        if (tentativas >= maximoTentativas) {
+        if (tentativas <= 0) {
             JOptionPane.showMessageDialog(panel, "Você perdeu! A palavra era: " + palavraSorteada);
             perguntarReiniciarOuSair();
         } else if (mascara.toString().equals(palavraSorteada)) {
@@ -230,13 +230,12 @@ public void initSwingComponents() {
 
     // Reiniciar o jogo após vitória ou derrota
     public void reiniciarJogo() {
-        this.maximoTentativas = 10;
         this.pontuacao = 0;
-        this.tentativas = 0;
+        this.tentativas = 10;
         this.letrasDigitadas.clear();
         palavraSorteada = escolherDificuldade(); // Sortear nova palavra
         lblPalavra.setText("Palavra: " + palavra.criarMascara(palavraSorteada));
-        lblTentativas.setText("Tentativas restantes: " + maximoTentativas);
+        lblTentativas.setText("Tentativas restantes: " +  tentativas);
         lblPontuacao.setText("Pontuação: " + pontuacao);
         lblPontuacao.setForeground(Color.BLACK);
         lblLetrasErradas.setText("Letras erradas: ");
@@ -255,7 +254,8 @@ public void initSwingComponents() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))) {
             writer.write(palavraSorteada + "\n");
             writer.write(lblPalavra.getText() + "\n");
-            writer.write(pontuacao + "\n");
+            writer.write("Tentativas restantes: " + (tentativas) + "\n");
+            writer.write("Pontuação: " + pontuacao + "\n"); // Adicionar o prefixo "Pontuação: "
     
             for (char letra : letrasDigitadas) {
                 writer.write(letra + "\n");
@@ -276,13 +276,34 @@ public void initSwingComponents() {
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
             palavraSorteada = reader.readLine();
             lblPalavra.setText(reader.readLine());
-            pontuacao = Integer.parseInt(reader.readLine());
     
-            letrasDigitadas.clear();
+            // Tentativas 
+            String tentativasStr = reader.readLine();
+            if (tentativasStr.startsWith("Tentativas restantes: ")) {
+                tentativasStr = tentativasStr.substring(22);
+            }
+    
+            tentativas = Integer.parseInt(tentativasStr);
+            lblTentativas.setText("Tentativas restantes: " + tentativas);
+    
+            // Remover o prefixo "Pontuação: " antes de converter para inteiro
+            String pontuacaoStr = reader.readLine();
+            if (pontuacaoStr.startsWith("Pontuação: ")) {
+                pontuacaoStr = pontuacaoStr.substring(11); // Remover "Pontuação: "
+            }
+            pontuacao = Integer.parseInt(pontuacaoStr);
+            lblPontuacao.setText("Pontuação: " + pontuacao);
+    
+            StringBuilder letrasBuilder = new StringBuilder(); // Para construir a string das letras digitadas
             String linha;
             while ((linha = reader.readLine()) != null) {
-                letrasDigitadas.add(linha.charAt(0));
+                char letra = linha.charAt(0);
+                letrasDigitadas.add(letra);
+                letrasBuilder.append(letra).append(" "); // Adicionar a letra à string
             }
+    
+            // Atualizar o componente que exibe as letras digitadas
+            lblLetrasErradas.setText("Letras digitadas: " + letrasBuilder.toString().trim());
         }
     }
     

@@ -49,12 +49,14 @@ public class InterfaceSwing {
         gbc.gridy++;
     
         JButton btnIniciar = new JButton("Iniciar Jogo");
+        btnIniciar.setForeground(Color.BLUE);
         btnIniciar.setPreferredSize(new Dimension(200, 50)); // Definir tamanho preferencial
         btnIniciar.setFont(new Font("Arial", Font.BOLD, 18)); // Aumentar a fonte do botão
         telaInicial.add(btnIniciar, gbc);
     
-        gbc.gridy++;
+        gbc.gridy++; // incrementar a linha para adicionar o Jogo Salvo abaixo do botão Iniciar
         JButton btnAbrir = new JButton("Abrir Jogo Salvo");
+        btnAbrir.setForeground(Color.ORANGE);
         btnAbrir.setPreferredSize(new Dimension(200, 50)); // Definir tamanho preferencial
         btnAbrir.setFont(new Font("Arial", Font.BOLD, 18)); // Aumentar a fonte do botão
         telaInicial.add(btnAbrir, gbc);

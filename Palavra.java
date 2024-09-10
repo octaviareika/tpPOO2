@@ -59,6 +59,39 @@ public class Palavra {
         this.palavrasDificeis = palavrasDificeis;
     }
 
+    public void adicionarDicasParaCadaPalavra(String palavra){
+        if (palavra.equals("moto") || palavra.equals("carro")|| palavra.equals("navio")
+            || palavra.equals("trem") || palavra.equals("bicicleta") || palavra.equals("aviao")
+        ){
+            System.out.println("Dica: Veículo");
+        } else if (palavra.equals("computador") || palavra.equals("celular") || palavra.equals("tablet")
+            || palavra.equals("notebook") || palavra.equals("teclado") || palavra.equals("mouse")
+        ){
+            System.out.println("Dica: Eletrônico");
+        } else if ( palavra.equals("paralelepipedo") || palavra.equals("hipotenusa")
+          
+        ){
+            System.out.println("Dica: Conceito geométrico");
+        }
+
+        else if (palavra.equals("onomatopeia")){
+            System.out.println("Dica: Barulho de algo");
+        } else if (palavra.equals("procrastinacao")){
+            System.out.println("Dica: Adiar algo");
+        } else if (palavra.equals("hemeroteca")){
+            System.out.println("Dica: Armazenador de jornal");
+        } else if (palavra.equals("inocuo")){
+            System.out.println("Dica: Inofensivo");
+        } else if (palavra.equals("cacofonia")){
+            System.out.println("Dica: Som desagradável");
+        } else if (palavra.equals("esdruxulo")){
+            System.out.println("Dica: Complicado");
+        } else if (palavra.equals("inextricavel")){
+            System.out.println("Dica: Que não se pode desatar");
+        }
+
+    }
+
 
     // criar mascara 
     public String criarMascara(String palavra) {
