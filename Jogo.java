@@ -122,8 +122,8 @@ public void initSwingComponents() {
     panel.add(lblTentativas);
     panel.add(lblPontuacao);
     panel.add(lblMensagem);
-    panel.add(lblLetrasErradas);
     panel.add(lbldicas);
+    panel.add(lblLetrasErradas);
     panel.add(inputPanel); // Adicionar o painel de entrada
     
     panel.add(lblBoneco);
@@ -272,6 +272,7 @@ public void initSwingComponents() {
             writer.write(lblPalavra.getText() + "\n");
             writer.write("Tentativas restantes: " + (tentativas) + "\n");
             writer.write("Pontuação: " + pontuacao + "\n"); // Adicionar o prefixo "Pontuação: "
+            writer.write("DICA: " + palavra.adicionarDicasParaCadaPalavra(palavraSorteada) + "\n");
     
             for (char letra : letrasDigitadas) {
                 writer.write(letra + "\n");
@@ -310,6 +311,13 @@ public void initSwingComponents() {
             }
             pontuacao = Integer.parseInt(pontuacaoStr);
             lblPontuacao.setText("Pontuação: " + pontuacao);
+
+            // DICAS AQUI
+            lbldicas.setText(reader.readLine());
+            if (lbldicas.getText().startsWith("DICA: ")) {
+                lbldicas.setText(lbldicas.getText().substring(6));
+                lbldicas.setText("DICA: " + palavra.adicionarDicasParaCadaPalavra(palavraSorteada));
+            }
     
             StringBuilder letrasBuilder = new StringBuilder(); // Para construir a string das letras digitadas
             String linha;

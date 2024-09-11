@@ -2,10 +2,10 @@ import java.util.*;
 
 public class Palavra {
     private ArrayList<String> palavrasFaceis = new ArrayList<String>(Arrays.asList(
-        "casa", "carro", "moto", "bicicleta", "aviao", "navio", "trem", "onibus", "caminhao", "moto"
+        "casa", "carro", "moto", "bicicleta", "aviao", "navio", "trem", "onibus", "caminhao", "moto", "rosa", "verde", "azul", "planta"
     ));
     private ArrayList<String> palavrasMedias = new ArrayList<String>(Arrays.asList(
-        "computador", "celular", "tablet", "notebook", "teclado", "mouse", "monitor", "impressora", "roteador", "modem"
+        "computador", "celular", "tablet", "notebook", "teclado", "mouse", "monitor", "impressora", "roteador", "modem", "caravana", "planalto", "cachoeira", "laboratorio"
     ));
     private ArrayList<String> palavrasDificeis = new ArrayList<String>(Arrays.asList(
         "inextricavel", "paralelepipedo", "hipotenusa", "idiossincrasia", "esdruxulo", "onomatopeia", "procrastinacao", "hemeroteca", "inocuo", "cacofonia"
@@ -61,8 +61,8 @@ public class Palavra {
 
     public String adicionarDicasParaCadaPalavra(String palavra){
         if (palavra.equals("moto") || palavra.equals("carro")|| palavra.equals("navio")
-            || palavra.equals("trem") || palavra.equals("bicicleta") || palavra.equals("aviao")
-        ){
+            || palavra.equals("trem") || palavra.equals("bicicleta") || palavra.equals("aviao") || palavra.equals("caminhao"))
+        {
             return "Veículo";
         } else if (palavra.equals("computador") || palavra.equals("celular") || palavra.equals("tablet")
             || palavra.equals("notebook") || palavra.equals("teclado") || palavra.equals("mouse")
@@ -72,6 +72,9 @@ public class Palavra {
           
         ){
             return "Geometria";
+        }
+        else if (palavra.equals("casa")){
+            return "Moradia";
         }
 
         else if (palavra.equals("onomatopeia")){
@@ -88,6 +91,22 @@ public class Palavra {
             return "Estranho";
         } else if (palavra.equals("inextricavel")){
             return "Difícil";
+        } else if (palavra.equals("laboratorio")){
+            return "Experiência";
+        } else if (palavra.equals("cachoeira")){
+            return "Água";
+        } else if (palavra.equals("caravana")){
+            return "Grupo";
+        } else if (palavra.equals("planalto")){
+            return "Montanha";
+        } else if (palavra.equals("verde") || palavra.equals("azul") || palavra.equals("rosa")){
+            return "Cor";
+        }
+        else if (palavra.equals("planta")){
+            return "Natureza";
+        }
+        else if (palavra.equals("modem")){
+            return "Internet";
         }
 
         return "";
