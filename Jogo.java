@@ -271,13 +271,14 @@ public void initSwingComponents() {
             writer.write(palavraSorteada + "\n");
             writer.write(lblPalavra.getText() + "\n");
             writer.write("Tentativas restantes: " + (tentativas) + "\n");
-            writer.write("Pontuação: " + pontuacao + "\n"); // Adicionar o prefixo "Pontuação: "
+            writer.write("Pontuação: " + pontuacao + "\n");
             writer.write("DICA: " + palavra.adicionarDicasParaCadaPalavra(palavraSorteada) + "\n");
     
             for (char letra : letrasDigitadas) {
                 writer.write(letra + "\n");
             }
-            
+    
+            writer.write("Erros: " + forca.getErros() + "\n"); // Salvar o número de erros
         }
     
         System.out.println("Arquivo salvo");
@@ -295,43 +296,53 @@ public void initSwingComponents() {
             palavraSorteada = reader.readLine();
             lblPalavra.setText(reader.readLine());
     
-            // Tentativas 
+            // Ler tentativas restantes
             String tentativasStr = reader.readLine();
             if (tentativasStr.startsWith("Tentativas restantes: ")) {
                 tentativasStr = tentativasStr.substring(22);
             }
-    
             tentativas = Integer.parseInt(tentativasStr);
             lblTentativas.setText("Tentativas restantes: " + tentativas);
     
-            // Remover o prefixo "Pontuação: " antes de converter para inteiro
+            // Ler pontuação
             String pontuacaoStr = reader.readLine();
             if (pontuacaoStr.startsWith("Pontuação: ")) {
-                pontuacaoStr = pontuacaoStr.substring(11); // Remover "Pontuação: "
+                pontuacaoStr = pontuacaoStr.substring(11);
             }
             pontuacao = Integer.parseInt(pontuacaoStr);
             lblPontuacao.setText("Pontuação: " + pontuacao);
-
-            // DICAS AQUI
-            lbldicas.setText(reader.readLine());
-            if (lbldicas.getText().startsWith("DICA: ")) {
-                lbldicas.setText(lbldicas.getText().substring(6));
-                lbldicas.setText("DICA: " + palavra.adicionarDicasParaCadaPalavra(palavraSorteada));
+    
+            // Ler dica
+            String dicaStr = reader.readLine();
+            if (dicaStr.startsWith("DICA: ")) {
+                dicaStr = dicaStr.substring(6);
+            }
+            lbldicas.setText("DICA: " + dicaStr);
+            palavra.adicionarDicasParaCadaPalavra(palavraSorteada); // Atualizar a dica
+    
+            // Ler letras digitadas
+            letrasDigitadas.clear();
+            StringBuilder letrasBuilder = new StringBuilder();
+            String linha;
+            while ((linha = reader.readLine()) != null && !linha.startsWith("Erros:")) {
+                letrasDigitadas.add(linha.charAt(0));
+                letrasBuilder.append(linha.charAt(0)).append(" ");
             }
     
-            StringBuilder letrasBuilder = new StringBuilder(); // Para construir a string das letras digitadas
-            String linha;
-            while ((linha = reader.readLine()) != null) {
-                char letra = linha.charAt(0);
-                letrasDigitadas.add(letra);
-                letrasBuilder.append(letra).append(" "); // Adicionar a letra à string
+            // Ler número de erros
+            if (linha != null && linha.startsWith("Erros: ")) {
+                String errosStr = linha.substring(7);
+                int erros = Integer.parseInt(errosStr);
+                forca.setErros(erros);
             }
     
             // Atualizar o componente que exibe as letras digitadas
             lblLetrasErradas.setText("Letras digitadas: " + letrasBuilder.toString().trim());
         }
-    }
     
+        atualizarImagemBoneco(); // Atualizar a imagem do boneco com base no número de erros
+        System.out.println("Arquivo carregado");
+    }
     public static void main(String[] args) throws IOException {
         // Inicializar o jogo com a interface Swing
         InterfaceSwing interfaceSwing = new InterfaceSwing();
