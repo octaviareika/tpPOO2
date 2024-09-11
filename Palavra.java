@@ -59,36 +59,38 @@ public class Palavra {
         this.palavrasDificeis = palavrasDificeis;
     }
 
-    public void adicionarDicasParaCadaPalavra(String palavra){
+    public String adicionarDicasParaCadaPalavra(String palavra){
         if (palavra.equals("moto") || palavra.equals("carro")|| palavra.equals("navio")
             || palavra.equals("trem") || palavra.equals("bicicleta") || palavra.equals("aviao")
         ){
-            System.out.println("Dica: Veículo");
+            return "Veículo";
         } else if (palavra.equals("computador") || palavra.equals("celular") || palavra.equals("tablet")
             || palavra.equals("notebook") || palavra.equals("teclado") || palavra.equals("mouse")
         ){
-            System.out.println("Dica: Eletrônico");
+            return "Eletrônico";
         } else if ( palavra.equals("paralelepipedo") || palavra.equals("hipotenusa")
           
         ){
-            System.out.println("Dica: Conceito geométrico");
+            return "Geometria";
         }
 
         else if (palavra.equals("onomatopeia")){
-            System.out.println("Dica: Barulho de algo");
+            return "Som";
         } else if (palavra.equals("procrastinacao")){
-            System.out.println("Dica: Adiar algo");
+            return "Adiar";
         } else if (palavra.equals("hemeroteca")){
-            System.out.println("Dica: Armazenador de jornal");
+            return "Jornal";
         } else if (palavra.equals("inocuo")){
-            System.out.println("Dica: Inofensivo");
+            return "Inofensivo";
         } else if (palavra.equals("cacofonia")){
-            System.out.println("Dica: Som desagradável");
+            return "Som desagradável";
         } else if (palavra.equals("esdruxulo")){
-            System.out.println("Dica: Complicado");
+            return "Estranho";
         } else if (palavra.equals("inextricavel")){
-            System.out.println("Dica: Que não se pode desatar");
+            return "Difícil";
         }
+
+        return "";
 
     }
 

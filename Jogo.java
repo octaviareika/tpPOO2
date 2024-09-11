@@ -26,6 +26,7 @@ public class Jogo {
     private JTextField txtLetra;
     private JButton btnEnviar;
     private JButton btnSalvar;
+    private JLabel lbldicas;
 
     Jogo(InterfaceSwing interfaceSwing) throws IOException {
       // this.maximoTentativas = 10;
@@ -59,11 +60,16 @@ public void initSwingComponents() {
     lblMensagem.setFont(new Font("Arial", Font.BOLD, 14));
     lblLetrasErradas = new JLabel("Letras erradas: ", SwingConstants.CENTER);
     lblLetrasErradas.setFont(new Font("Arial", Font.BOLD, 14));
-
+    
     // Rótulo para exibir a imagem do boneco
     lblBoneco = new JLabel();
     lblBoneco.setHorizontalAlignment(SwingConstants.CENTER);
     atualizarImagemBoneco(); // Atualizar a imagem inicial do boneco
+
+    lbldicas = new JLabel("DICA: " + palavra.adicionarDicasParaCadaPalavra(palavraSorteada), SwingConstants.CENTER);
+    lbldicas.setFont(new Font("Arial", Font.BOLD, 14));
+    lbldicas.setForeground(Color.BLUE);
+    
 
     // Campo de texto para inserir a letra
     txtLetra = new JTextField(2);
@@ -117,7 +123,9 @@ public void initSwingComponents() {
     panel.add(lblPontuacao);
     panel.add(lblMensagem);
     panel.add(lblLetrasErradas);
+    panel.add(lbldicas);
     panel.add(inputPanel); // Adicionar o painel de entrada
+    
     panel.add(lblBoneco);
 }
 
@@ -268,6 +276,7 @@ public void initSwingComponents() {
             for (char letra : letrasDigitadas) {
                 writer.write(letra + "\n");
             }
+            
         }
     
         System.out.println("Arquivo salvo");
