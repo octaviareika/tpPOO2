@@ -249,18 +249,19 @@ public void initSwingComponents() {
         this.pontuacao = 0;
         this.tentativas = 10;
         this.letrasDigitadas.clear();
-        palavraSorteada = escolherDificuldade(); // Sortear nova palavra
+        palavraSorteada = escolherDificuldade(); // Sortear nova palavra com a dificuldade escolhida
         lblPalavra.setText("Palavra: " + palavra.criarMascara(palavraSorteada));
-        lblTentativas.setText("Tentativas restantes: " +  tentativas);
+        lblTentativas.setText("Tentativas restantes: " + tentativas);
         lblPontuacao.setText("Pontuação: " + pontuacao);
         lblPontuacao.setForeground(Color.BLACK);
+        String dica = palavra.adicionarDicasParaCadaPalavra(palavraSorteada);
+        lbldicas.setText("DICA: " + dica);
         lblLetrasErradas.setText("Letras erradas: ");
         lblMensagem.setText("");
         forca.resetarBoneco(); // Resetar o boneco
         forca.resetarErros();
         atualizarImagemBoneco();
     }
-
     // Métodos de salvar e carregar estado, getters e setters, e main
 
     public void salvarDados() throws IOException {

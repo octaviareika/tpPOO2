@@ -65,7 +65,7 @@ public class Palavra {
         {
             return "Veículo";
         } else if (palavra.equals("computador") || palavra.equals("celular") || palavra.equals("tablet")
-            || palavra.equals("notebook") || palavra.equals("teclado") || palavra.equals("mouse")
+            || palavra.equals("notebook") || palavra.equals("teclado") || palavra.equals("mouse") || palavra.equals("monitor")
         ){
             return "Eletrônico";
         } else if ( palavra.equals("paralelepipedo") || palavra.equals("hipotenusa")
@@ -107,6 +107,17 @@ public class Palavra {
         }
         else if (palavra.equals("modem")){
             return "Internet";
+        }
+
+        else if (palavra.equals("impressora")){
+            return "Papel";
+        }
+        else if (palavra.equals("roteador")){
+            return "Internet";
+        }
+
+        else if (palavra.equals("idiossincrasia")){
+            return "Característica";
         }
 
         return "";
