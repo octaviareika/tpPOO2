@@ -344,10 +344,5 @@ public void initSwingComponents() {
         atualizarImagemBoneco(); // Atualizar a imagem do boneco com base no número de erros
         System.out.println("Arquivo carregado");
     }
-    public static void main(String[] args) throws IOException {
-        // Inicializar o jogo com a interface Swing
-        InterfaceSwing interfaceSwing = new InterfaceSwing();
-        Jogo jogo = new Jogo(interfaceSwing);
-        
-    }
+    
 }
