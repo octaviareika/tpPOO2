@@ -1,7 +1,13 @@
-carro
-Palavra: _a__o
-30
+celular
+Palavra: celular
+Tentativas restantes: 9
+Pontuação: 115
+DICA: Eletrônico
 a
-v
-m
-o
+r
+c
+t
+e
+u
+l
+Erros: 1

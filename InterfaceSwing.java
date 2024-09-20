@@ -40,7 +40,7 @@ public class InterfaceSwing {
         gbc.gridy++;
     
         // Carregar e adicionar a imagem
-        ImageIcon imagemForcaIcon = new ImageIcon("TPPOO2/ImagensBoneco2/jogoForca.png");
+        ImageIcon imagemForcaIcon = new ImageIcon("ImagensBoneco2/jogoForca.png");
         Image imagemForca = imagemForcaIcon.getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH);
         JLabel lblImagemForca = new JLabel(new ImageIcon(imagemForca));
         telaInicial.add(lblImagemForca, gbc);

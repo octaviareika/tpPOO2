@@ -194,14 +194,14 @@ public void initSwingComponents() {
                     mascara.setCharAt(i, letra.charAt(0));
                 }
             }
-            playSound("TPPOO2/musicas/acertaPalavra.wav");
+            playSound("musicas/acertaPalavra.wav");
             lblMensagem.setText("Acertou a letra!");
             lblMensagem.setForeground(Color.GREEN);
             
             pontuacao += 20;
             lblPontuacao.setForeground(Color.GREEN);
         } else {
-            playSound("TPPOO2/musicas/letraErrada.wav");
+            playSound("musicas/letraErrada.wav");
             lblMensagem.setText("Errou a letra!");
             lblMensagem.setForeground(Color.RED);
             pontuacao -= 5;
@@ -221,11 +221,11 @@ public void initSwingComponents() {
         // Verificar vitória ou derrota
         if (tentativas <= 0) {
             JOptionPane.showMessageDialog(panel, "Você perdeu! A palavra era: " + palavraSorteada);
-            playSound("TPPOO2/musicas/jogoPerdido.wav");
+            playSound("musicas/jogoPerdido.wav");
             perguntarReiniciarOuSair(false);
         } else if (mascara.toString().equals(palavraSorteada)) {
             JOptionPane.showMessageDialog(panel, "Você venceu!");
-            playSound("TPPOO2/musicas/vitoria.wav");
+            playSound("musicas/vitoria.wav");
            perguntarReiniciarOuSair(true);
         }
     }
@@ -292,11 +292,20 @@ public void initSwingComponents() {
         if (!arquivo.exists()) {
             throw new FileNotFoundException("Arquivo de dados não encontrado: " + arquivo.getAbsolutePath());
         }
-    
+
+        
         try (BufferedReader reader = new BufferedReader(new FileReader(arquivo))) {
+            
+
             palavraSorteada = reader.readLine();
             lblPalavra.setText(reader.readLine());
-    
+
+            if (lblPalavra.getText().replace("Palavra: ", "").equals(palavraSorteada)) {
+                JOptionPane.showMessageDialog(panel, "O jogo salvo já foi vencido. Reiniciando o jogo.");
+                reiniciarJogo();
+                return;
+            }
+        
             // Ler tentativas restantes
             String tentativasStr = reader.readLine();
             if (tentativasStr.startsWith("Tentativas restantes: ")) {
@@ -336,6 +345,9 @@ public void initSwingComponents() {
                 int erros = Integer.parseInt(errosStr);
                 forca.setErros(erros);
             }
+
+            // Verificar se o jogador ja ganhou num jogo salvo
+            
     
             // Atualizar o componente que exibe as letras digitadas
             lblLetrasErradas.setText("Letras digitadas: " + letrasBuilder.toString().trim());
